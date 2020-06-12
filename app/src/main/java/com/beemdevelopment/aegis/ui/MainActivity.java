@@ -108,7 +108,6 @@ public class MainActivity extends AegisActivity implements EntryListView.Listene
         _entryListView.setTapToRevealTime(getPreferences().getTapToRevealTime());
         _entryListView.setSortCategory(getPreferences().getCurrentSortCategory(), false);
         _entryListView.setViewMode(getPreferences().getCurrentViewMode());
-        _entryListView.setIsCopyOnTapEnabled(getPreferences().isCopyOnTapEnabled());
 
         // set up the floating action button
         _fabMenu = findViewById(R.id.fab);
@@ -216,28 +215,24 @@ public class MainActivity extends AegisActivity implements EntryListView.Listene
 
     private void onPreferencesResult(Intent data) {
         // refresh the entire entry list if needed
-        if (_loaded) {
-            if (data.getBooleanExtra("needsRecreate", false)) {
-                recreate();
-            } else if (data.getBooleanExtra("needsRefresh", false)) {
-                boolean showAccountName = getPreferences().isAccountNameVisible();
-                int codeGroupSize = getPreferences().getCodeGroupSize();
-                boolean searchAccountName = getPreferences().isSearchAccountNameEnabled();
-                boolean highlightEntry = getPreferences().isEntryHighlightEnabled();
-                boolean tapToReveal = getPreferences().isTapToRevealEnabled();
-                int tapToRevealTime = getPreferences().getTapToRevealTime();
-                ViewMode viewMode = getPreferences().getCurrentViewMode();
-                boolean copyOnTap = getPreferences().isCopyOnTapEnabled();
-                _entryListView.setShowAccountName(showAccountName);
-                _entryListView.setCodeGroupSize(codeGroupSize);
-                _entryListView.setSearchAccountName(searchAccountName);
-                _entryListView.setHighlightEntry(highlightEntry);
-                _entryListView.setTapToReveal(tapToReveal);
-                _entryListView.setTapToRevealTime(tapToRevealTime);
-                _entryListView.setViewMode(viewMode);
-                _entryListView.setIsCopyOnTapEnabled(copyOnTap);
-                _entryListView.refresh(true);
-            }
+        if (data.getBooleanExtra("needsRecreate", false)) {
+            recreate();
+        } else if (data.getBooleanExtra("needsRefresh", false)) {
+            boolean showAccountName = getPreferences().isAccountNameVisible();
+            int codeGroupSize = getPreferences().getCodeGroupSize();
+            boolean searchAccountName = getPreferences().isSearchAccountNameEnabled();
+            boolean highlightEntry = getPreferences().isEntryHighlightEnabled();
+            boolean tapToReveal = getPreferences().isTapToRevealEnabled();
+            int tapToRevealTime = getPreferences().getTapToRevealTime();
+            ViewMode viewMode = getPreferences().getCurrentViewMode();
+            _entryListView.setShowAccountName(showAccountName);
+            _entryListView.setCodeGroupSize(codeGroupSize);
+            _entryListView.setSearchAccountName(searchAccountName);
+            _entryListView.setHighlightEntry(highlightEntry);
+            _entryListView.setTapToReveal(tapToReveal);
+            _entryListView.setTapToRevealTime(tapToRevealTime);
+            _entryListView.setViewMode(viewMode);
+            _entryListView.refresh(true);
         }
     }
 
@@ -259,9 +254,7 @@ public class MainActivity extends AegisActivity implements EntryListView.Listene
         } else {
             for (VaultEntry entry : entries) {
                 _vault.addEntry(entry);
-                if (_loaded) {
-                    _entryListView.addEntry(entry);
-                }
+                _entryListView.addEntry(entry);
             }
 
             saveVault();
@@ -269,23 +262,19 @@ public class MainActivity extends AegisActivity implements EntryListView.Listene
     }
 
     private void onAddEntryResult(Intent data) {
-        if (_loaded) {
-            UUID entryUUID = (UUID) data.getSerializableExtra("entryUUID");
-            VaultEntry entry = _vault.getEntryByUUID(entryUUID);
-            _entryListView.addEntry(entry);
-        }
+        UUID entryUUID = (UUID) data.getSerializableExtra("entryUUID");
+        VaultEntry entry = _vault.getEntryByUUID(entryUUID);
+        _entryListView.addEntry(entry);
     }
 
     private void onEditEntryResult(Intent data) {
-        if (_loaded) {
-            UUID entryUUID = (UUID) data.getSerializableExtra("entryUUID");
+        UUID entryUUID = (UUID) data.getSerializableExtra("entryUUID");
 
-            if (data.getBooleanExtra("delete", false)) {
-                _entryListView.removeEntry(entryUUID);
-            } else {
-                VaultEntry entry = _vault.getEntryByUUID(entryUUID);
-                _entryListView.replaceEntry(entryUUID, entry);
-            }
+        if (data.getBooleanExtra("delete", false)) {
+            _entryListView.removeEntry(entryUUID);
+        } else {
+            VaultEntry entry = _vault.getEntryByUUID(entryUUID);
+            _entryListView.replaceEntry(entryUUID, entry);
         }
     }
 
@@ -626,11 +615,10 @@ public class MainActivity extends AegisActivity implements EntryListView.Listene
     }
 
     private void loadEntries() {
-        if (!_loaded) {
-            _entryListView.addEntries(_vault.getEntries());
-            _entryListView.runEntriesAnimation();
-            _loaded = true;
-        }
+        List<VaultEntry> entries = new ArrayList<>(_vault.getEntries());
+        _entryListView.addEntries(entries);
+        _entryListView.runEntriesAnimation();
+        _loaded = true;
     }
 
     private void startAuthActivity() {
@@ -658,6 +646,8 @@ public class MainActivity extends AegisActivity implements EntryListView.Listene
 
             return;
         }
+
+        copyEntryCode(entry);
     }
 
     @Override
@@ -700,10 +690,6 @@ public class MainActivity extends AegisActivity implements EntryListView.Listene
     @Override
     public void onEntryChange(VaultEntry entry) {
         saveVault();
-    }
-
-    public void onEntryCopy(VaultEntry entry) {
-        copyEntryCode(entry);
     }
 
     @Override
@@ -756,20 +742,6 @@ public class MainActivity extends AegisActivity implements EntryListView.Listene
 
                     case R.id.action_edit:
                         startEditEntryActivity(CODE_EDIT_ENTRY, _selectedEntries.get(0), false);
-                        mode.finish();
-                        return true;
-
-                    case R.id.action_share_qr:
-                        Intent intent = new Intent(getBaseContext(), TransferEntriesActivity.class);
-                        ArrayList<GoogleAuthInfo> authInfos = new ArrayList<>();
-                        for (VaultEntry entry : _selectedEntries) {
-                            GoogleAuthInfo authInfo = new GoogleAuthInfo(entry.getInfo(), entry.getName(), entry.getIssuer());
-                            authInfos.add(authInfo);
-                        }
-
-                        intent.putExtra("authInfos", authInfos);
-                        startActivity(intent);
-
                         mode.finish();
                         return true;
 

@@ -7,7 +7,6 @@
     <string name="action_about">About</string>
     <string name="action_import">Import</string>
     <string name="action_delete">Delete</string>
-    <string name="action_edit_icon">Edit icon</string>
     <string name="action_default_icon">Restore default icon</string>
     <string name="discard">Discard</string>
     <string name="save">Save</string>
@@ -72,11 +71,6 @@
     <string name="authentication_method_set_password">Password</string>
     <string name="authentication_enter_password">Enter your password</string>
     <string name="authentication">Unlock the vault</string>
-
-    <!-- The newline (\n) on the following line is just for aesthetic purposes !-->
-    <string name="authentication_multiline">Unlock\nthe vault</string>
-
-    <string name="auth_use_biometrics">Or tap here to use <font fgcolor='#FF0D86C1'>biometrics</font></string>
     <string name="set_password">Please enter a password</string>
     <string name="set_group">Please enter a group name</string>
     <string name="set_number">Please enter a number</string>
@@ -195,13 +189,10 @@
     <string name="group_name_hint">Group name</string>
     <string name="preference_manage_groups">Edit groups</string>
     <string name="preference_manage_groups_summary">Manage and delete your groups here</string>
-    <string name="title_activity_preferences">Settings</string>
     <string name="pref_search_name_title">Search in account names</string>
     <string name="pref_search_name_summary">Include account name matches in the search results</string>
     <string name="pref_highlight_entry_title">Highlight tokens when tapped</string>
     <string name="pref_highlight_entry_summary">Make tokens easier to distinguish from each other by temporarily highlighting them when tapped</string>
-    <string name="pref_copy_on_tap_title">Copy tokens when tapped</string>
-    <string name="pref_copy_on_tap_summary">Copy tokens to the clipboard by tapping them</string>
     <string name="tap_to_reveal">Hidden</string>
     <string name="selected">Selected</string>
     <string name="dark_theme_title">Dark theme</string>
@@ -216,9 +207,7 @@
     <string name="unknown_account_name">Unknown account name</string>
     <string name="import_error_dialog">Aegis could not import %d tokens. These tokens will be skipped. Press \'details\' to see more information about the errors.</string>
     <string name="unable_to_read_qrcode">Unable to read and process QR code</string>
-    <string name="unable_to_generate_qrcode">Unable to generate QR code</string>
     <string name="select_picture">Select picture</string>
-    <string name="select_icon">Select icon</string>
     <string name="toggle_checkboxes">Toggle checkboxes</string>
     <string name="search">Search</string>
     <string name="channel_name_lock_status">Lock status</string>
@@ -267,11 +256,4 @@
     </string>
     <string name="empty_list">There are no codes to be shown. Start adding entries by tapping the plus sign in the bottom right corner</string>
     <string name="empty_list_title">No entries found</string>
-    <string name="done">Done</string>
-    <string name="title_activity_transfer">Transfer entries</string>
-    <string name="entries_count">%d / %d entries</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-    <string name="transfer_entry">Transfer entry</string>
-    <string name="transfer_entry_description">Scan this QR code with the authenticator app you would like to transfer this entry to</string>
 </resources>

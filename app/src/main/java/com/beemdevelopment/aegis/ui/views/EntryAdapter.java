@@ -18,7 +18,6 @@ import com.beemdevelopment.aegis.otp.TotpInfo;
 import com.beemdevelopment.aegis.vault.VaultEntry;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -38,7 +37,6 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryHolder> implements I
     private boolean _highlightEntry;
     private boolean _tapToReveal;
     private int _tapToRevealTime;
-    private boolean _copyOnTap;
     private String _groupFilter;
     private SortCategory _sortCategory;
     private ViewMode _viewMode;
@@ -90,10 +88,6 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryHolder> implements I
         _highlightEntry = highlightEntry;
     }
 
-    public void setIsCopyOnTapEnabled(boolean enabled) {
-        _copyOnTap = enabled;
-    }
-
     public VaultEntry getEntryAt(int position) {
         return _shownEntries.get(position);
     }
@@ -133,7 +127,7 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryHolder> implements I
         checkPeriodUniformity();
     }
 
-    public void addEntries(Collection<VaultEntry> entries) {
+    public void addEntries(List<VaultEntry> entries) {
         _entries.addAll(entries);
         updateShownEntries();
         checkPeriodUniformity(true);
@@ -224,7 +218,7 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryHolder> implements I
             notifyDataSetChanged();
         } else {
             for (EntryHolder holder : _holders) {
-                holder.refresh();
+                holder.refreshCode();
             }
         }
     }
@@ -348,10 +342,7 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryHolder> implements I
                 boolean handled = false;
 
                 if (_selectedEntries.isEmpty()) {
-                    if (_copyOnTap) {
-                        _view.onEntryCopy(entry);
-                        holder.animateCopyText();
-                    }
+                    holder.animateCopyText();
 
                     if (_highlightEntry || _tapToReveal) {
                         if (_focusedEntry == entry) {
@@ -556,7 +547,6 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryHolder> implements I
         void onEntryMove(VaultEntry entry1, VaultEntry entry2);
         void onEntryDrop(VaultEntry entry);
         void onEntryChange(VaultEntry entry);
-        void onEntryCopy(VaultEntry entry);
         void onPeriodUniformityChanged(boolean uniform, int period);
         void onSelect(VaultEntry entry);
         void onDeselect(VaultEntry entry);

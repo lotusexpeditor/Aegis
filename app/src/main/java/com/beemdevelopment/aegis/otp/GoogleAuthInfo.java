@@ -8,11 +8,10 @@ import com.beemdevelopment.aegis.encoding.Base64;
 import com.beemdevelopment.aegis.encoding.EncodingException;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GoogleAuthInfo implements Serializable {
+public class GoogleAuthInfo {
     public static final String SCHEME = "otpauth";
     public static final String SCHEME_EXPORT = "otpauth-migration";
 

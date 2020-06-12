@@ -45,7 +45,7 @@ public class EntryHolder extends RecyclerView.ViewHolder {
 
     private boolean _hidden;
 
-    private TotpProgressBar _progressBar;
+    private PeriodProgressBar _progressBar;
     private View _view;
 
     private UiRefresher _refresher;
@@ -68,7 +68,6 @@ public class EntryHolder extends RecyclerView.ViewHolder {
         _buttonRefresh = view.findViewById(R.id.buttonRefresh);
         _selected = view.findViewById(R.id.ivSelected);
         _selectedHandler = new Handler();
-        _animationHandler = new Handler();
 
         _progressBar = view.findViewById(R.id.progressBar);
         int primaryColorId = view.getContext().getResources().getColor(R.color.colorPrimary);
@@ -84,6 +83,8 @@ public class EntryHolder extends RecyclerView.ViewHolder {
                 if (!_hidden) {
                     refreshCode();
                 }
+
+                _progressBar.refresh();
             }
 
             @Override
@@ -105,7 +106,6 @@ public class EntryHolder extends RecyclerView.ViewHolder {
         _selected.clearAnimation();
         _selected.setVisibility(View.GONE);
         _selectedHandler.removeCallbacksAndMessages(null);
-        _animationHandler.removeCallbacksAndMessages(null);
 
         // only show the progress bar if there is no uniform period and the entry type is TotpInfo
         setShowProgress(showProgress);
@@ -197,17 +197,10 @@ public class EntryHolder extends RecyclerView.ViewHolder {
 
     public void startRefreshLoop() {
         _refresher.start();
-        _progressBar.start();
     }
 
     public void stopRefreshLoop() {
         _refresher.stop();
-        _progressBar.stop();
-    }
-
-    public void refresh() {
-        _progressBar.restart();
-        refreshCode();
     }
 
     public void refreshCode() {
@@ -253,8 +246,9 @@ public class EntryHolder extends RecyclerView.ViewHolder {
     }
 
     public void animateCopyText() {
-        _animationHandler.removeCallbacksAndMessages(null);
-
+        if (_animationHandler != null) {
+            _animationHandler.removeCallbacksAndMessages(null);
+        }
         Animation slideDownFadeIn = AnimationUtils.loadAnimation(itemView.getContext(), R.anim.slide_down_fade_in);
         Animation slideDownFadeOut = AnimationUtils.loadAnimation(itemView.getContext(), R.anim.slide_down_fade_out);
         Animation fadeOut = AnimationUtils.loadAnimation(itemView.getContext(), R.anim.fade_out);
@@ -263,9 +257,14 @@ public class EntryHolder extends RecyclerView.ViewHolder {
         _profileCopied.startAnimation(slideDownFadeIn);
         _description.startAnimation(slideDownFadeOut);
 
-        _animationHandler.postDelayed(() -> {
-            _profileCopied.startAnimation(fadeOut);
-            _description.startAnimation(fadeIn);
+
+        _animationHandler = new Handler();
+        _animationHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                _profileCopied.startAnimation(fadeOut);
+                _description.startAnimation(fadeIn);
+            }
         }, 3000);
     }
 

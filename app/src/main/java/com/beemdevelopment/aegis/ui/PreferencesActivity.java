@@ -1,7 +1,6 @@
 package com.beemdevelopment.aegis.ui;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 
 public class PreferencesActivity extends AegisActivity {
     private PreferencesFragment _fragment;
@@ -9,11 +8,6 @@ public class PreferencesActivity extends AegisActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
 
         if (savedInstanceState == null) {
             _fragment = new PreferencesFragment();
@@ -45,18 +39,5 @@ public class PreferencesActivity extends AegisActivity {
         // this is done so we don't lose anything if the fragment calls recreate on this activity
         outState.putParcelable("result", _fragment.getResult());
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-        return true;
     }
 }
